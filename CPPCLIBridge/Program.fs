@@ -1,20 +1,16 @@
-﻿// Дополнительные сведения о F# см. на http://fsharp.org
-// Дополнительную справку см. в проекте "Учебник по F#".
+﻿module Main
+
 open FSharp.Data
 open System.IO
 open System.Reflection
 open System
-
-exception ApplicationParameterError of string
-exception ApplicationArgumentError of string
+open ApplicationExceptions
+open LanguageEx
 
 type OperationConfig = JsonProvider<"OperationConfigExample.json">
 type CodeGenerationConfig = JsonProvider<"CodeGenerationConfigExample.json">
 
-//let flip f a b = f b a
-
-let inline checkParameterNotEmpty (ex : ^e)  parameter = 
-    match parameter with
+let inline checkParameterNotEmpty (ex : ^e)  = function
     | null     ->  raise ex
     | ""       ->  raise ex
     | _        -> ()
@@ -67,26 +63,27 @@ let prepareOperation (config : OperationConfig.Root) =
 
 let typeAsCPPCLIBridgeAttributed (attributeBridgeName : string) (type_ : System.Type) =
     type_.GetCustomAttributes(typeof<Bridge.CPPCLIBridgeAttribute>, false) |>
-    Seq.tryFind (fun attribute -> 
-                            match attribute with
-                            | :? Bridge.CPPCLIBridgeAttribute as target when target.BridgeName = attributeBridgeName       -> true
-                            | _                                                                                            -> false) |>
+    Seq.tryFind (function
+        | :? Bridge.CPPCLIBridgeAttribute as target when target.BridgeName = attributeBridgeName       -> true
+        | _                                                                                            -> false) |>
     Option.map (fun a -> a :? Bridge.CPPCLIBridgeAttribute)
 
-let typeIsCPPCLIBridgeAttributed attributeBridgeName type_ =
+(*let typeIsCPPCLIBridgeAttributed attributeBridgeName type_ =
     match typeAsCPPCLIBridgeAttributed attributeBridgeName type_ with
     | None  -> false
-    | _     -> true
+    | _     -> true*)
 
 let findClassesMarkedForGeneration attributeBridgeName sourceAssemblies = 
      sourceAssemblies |>
      Array.map Assembly.LoadFrom |>
      Seq.map (fun a -> a.Modules |>
                        Seq.map (fun m -> m.GetTypes() |>
-                                         Seq.filter (fun t -> typeIsCPPCLIBridgeAttributed attributeBridgeName t) |>
-                                                              Seq.map (fun t -> (a, m, t)))) |>
-        Seq.concat |> Seq.concat
-    
+                                         Seq.map (fun t -> (t,  typeAsCPPCLIBridgeAttributed attributeBridgeName t)) |>
+                                                          Seq.filter (fun (_, attr) -> Option.isSome attr) |>
+                                                                                       Seq.map (fun (t, attr) -> (a, m, t, attr)))) |>
+     Seq.concat |> Seq.concat
+
+
 [<EntryPoint>]
 let main argv = 
     let applicationResult = 
@@ -98,7 +95,7 @@ let main argv =
             let opConfig = prepareOperation opConfig
             let markedForGeneration = Array.ofSeq <| findClassesMarkedForGeneration opConfig.BridgeNameAttribute opConfig.SourceAssemblies
             Console.WriteLine()
-            markedForGeneration |> Array.iter (fun (a,m,t) ->  printfn "Marked for export: %s %s.%s" (a.GetName() |> string) t.Namespace t.Name)
+            markedForGeneration |> Array.iter (fun (a,m,t,attr) ->  printfn "Marked for export: %s %s.%s" (a.GetName() |> string) t.Namespace t.Name)
             Console.WriteLine()
             ()//implement
             0

@@ -1,0 +1,4 @@
+﻿module ApplicationExceptions
+
+exception ApplicationParameterError of string
+exception ApplicationArgumentError of string
