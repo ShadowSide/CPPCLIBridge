@@ -87,7 +87,10 @@
     <Compile Include="ReflectionModel.fs" />
     <Compile Include="LanguageEx.fs" />
     <Compile Include="ApplicationExceptions.fs" />
-	<Compile Include="Program.fs" />
+	<Compile Include="ConfigDataProviders.fs" />
+	<Compile Include="ConfigHandlers.fs" />
+    <Compile Include="Reflections.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Data">
