@@ -1,0 +1,12 @@
+{
+  "MappingTypes": [
+    { 
+      "CSharpType" : [ 
+      "int",
+      "int32" 
+      ],
+      "CPPCLIType" : "int",
+      "CPPType" : "int"
+    }
+  ]
+}

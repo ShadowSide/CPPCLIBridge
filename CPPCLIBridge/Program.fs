@@ -4,11 +4,11 @@ open FSharp.Data
 open System.IO
 open System.Reflection
 open System
-//open Bridge
 
 exception ApplicationParameterError of string
 
 type OperationConfig = JsonProvider<"OperationConfigExample.json">
+type CodeGenerationConfig = JsonProvider<"CodeGenerationConfigExample.json">
 
 let inline checkParameterNotEmpty (ex : ^e)  parameter = 
     match parameter with
@@ -30,14 +30,8 @@ let prepareOperation (config : OperationConfig.Root) =
     emptyDirectory (ApplicationParameterError "TempDirectory") config.TempDirectory
     emptyDirectory (ApplicationParameterError "DestinationDirectory") config.DestinationDirectory
     emptyDirectory (ApplicationParameterError "SecondLevelDestinationDirectory") config.SecondLevelDestinationDirectory
-    checkParameterNotEmpty (ApplicationParameterError "BridgeAssembly") config.BridgeAssembly
     checkParameterNotEmpty (ApplicationParameterError "BridgeNameAttribute") config.BridgeNameAttribute
     Array.iter (checkParameterNotEmpty <| ApplicationParameterError "SourceAssemblies") config.SourceAssemblies
-
-(*let inline asType<'T when 'T:not struct> (value:obj) = 
-  match value with
-  | :? 'T as t -> Some(t)
-  | _ -> None*)
 
 //let flip f a b = f b a
 
@@ -65,14 +59,18 @@ let findClassesMarkedForGeneration attributeBridgeName sourceAssemblies =
     
 [<EntryPoint>]
 let main argv = 
-    try
-        printfn "Started application with arguments: %A" argv
-        let opConfig = OperationConfig.Load @"C:\Sergey\Projects\CPPCLIBridge\CPPCLIBridge\OperationConfigExample.json"        
-        prepareOperation opConfig
-        let markedForGeneration = Array.ofSeq <| findClassesMarkedForGeneration opConfig.BridgeNameAttribute opConfig.SourceAssemblies
-        markedForGeneration |> Array.iter (fun (a,m,t) ->  printfn "Will exported: %s %s %s" (a.GetName() |> string) m.Name t.Name)
-        ()
-    with
-        | ex     -> printfn "Error occured: %s" (string ex)
+    let applicationResult = 
+        try
+            printfn "Started application with arguments: %A" argv
+            let opConfig = OperationConfig.Load @"C:\Sergey\Projects\CPPCLIBridge\CPPCLIBridge\OperationConfigExample.json"        
+            prepareOperation opConfig
+            let markedForGeneration = Array.ofSeq <| findClassesMarkedForGeneration opConfig.BridgeNameAttribute opConfig.SourceAssemblies
+            markedForGeneration |> Array.iter (fun (a,m,t) ->  printfn "Will exported: %s %s.%s" (a.GetName() |> string) t.Namespace t.Name)
+            ()//implement
+            0
+        with
+            | ex     -> 
+                printfn "Error occured: %s" (string ex)
+                1
     ignore <| Console.ReadLine()
-    0
+    applicationResult
