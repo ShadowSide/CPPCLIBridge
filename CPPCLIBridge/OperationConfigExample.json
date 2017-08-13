@@ -1,0 +1,10 @@
+{
+  "BridgeAssembly": "c:\\test\\Source\\Bridge.dll",
+  "SourceAssemblies": [
+    "c:\\test\\Source\\Notification.dll"
+  ],
+  "TempDirectory": "c:\\test\\Temp",
+  "DestinationDirectory": "c:\\test\\Destination",
+  "SecondLevelDestinationDirectory": "c:\\test\\SecondDestination",
+  "BridgeNameAttribute": "Notification"
+}
