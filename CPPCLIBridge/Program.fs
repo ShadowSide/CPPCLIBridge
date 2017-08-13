@@ -6,15 +6,23 @@ open System.Reflection
 open System
 
 exception ApplicationParameterError of string
+exception ApplicationArgumentError of string
 
 type OperationConfig = JsonProvider<"OperationConfigExample.json">
 type CodeGenerationConfig = JsonProvider<"CodeGenerationConfigExample.json">
+
+//let flip f a b = f b a
 
 let inline checkParameterNotEmpty (ex : ^e)  parameter = 
     match parameter with
     | null     ->  raise ex
     | ""       ->  raise ex
     | _        -> ()
+
+let inline checkExistsFile (ex : ^e) path = 
+    checkParameterNotEmpty ex path
+    if not <| File.Exists path then
+        raise ex
 
 let inline emptyDirectory (ex : ^e) (directory:string) = 
     ignore <| match directory with
@@ -26,16 +34,38 @@ let inline emptyDirectory (ex : ^e) (directory:string) =
                 | _                                     -> 
                     Directory.CreateDirectory (directory)
 
+let argumentsHandler (argv : string[]) = 
+    printfn "Application for C++\CLI and C++ codegen from C# assembly. Just mark codegen target classes by CPPCLIBridge attribute and configure config"
+    printfn "Application arguments: \"path to operation json config\""
+    printfn "Started application with arguments: %A" argv
+    if argv.Length < 1 then
+        raise (ApplicationArgumentError "Empty command line")
+    let operationConfigPath = argv.[0]
+    checkParameterNotEmpty (ApplicationArgumentError "Wrong \"path to operation json config\"") operationConfigPath
+    let operationConfigPath = Path.GetFullPath operationConfigPath
+    checkExistsFile (ApplicationArgumentError "Wrong \"fulled path to operation json config\"") operationConfigPath
+    (operationConfigPath)
+
 let prepareOperation (config : OperationConfig.Root) = 
-    emptyDirectory (ApplicationParameterError "TempDirectory") config.TempDirectory
-    emptyDirectory (ApplicationParameterError "DestinationDirectory") config.DestinationDirectory
-    emptyDirectory (ApplicationParameterError "SecondLevelDestinationDirectory") config.SecondLevelDestinationDirectory
-    checkParameterNotEmpty (ApplicationParameterError "BridgeNameAttribute") config.BridgeNameAttribute
-    Array.iter (checkParameterNotEmpty <| ApplicationParameterError "SourceAssemblies") config.SourceAssemblies
+    Console.WriteLine()
+    checkParameterNotEmpty (ApplicationParameterError "Wrong TempDirectory") config.TempDirectory
+    checkParameterNotEmpty (ApplicationParameterError "Wrong DestinationDirectory") config.DestinationDirectory
+    checkParameterNotEmpty (ApplicationParameterError "Wrong SecondLevelDestinationDirectory") config.SecondLevelDestinationDirectory
+    checkParameterNotEmpty (ApplicationParameterError "Wrong BridgeNameAttribute") config.BridgeNameAttribute
+    Array.iter (checkParameterNotEmpty <| ApplicationParameterError "Wrong SourceAssemblies") config.SourceAssemblies
+    let config = OperationConfig.Root(Array.map Path.GetFullPath config.SourceAssemblies, Path.GetFullPath config.TempDirectory, Path.GetFullPath config.DestinationDirectory, Path.GetFullPath config.SecondLevelDestinationDirectory, config.BridgeNameAttribute)
+    Array.iter (checkExistsFile <| ApplicationParameterError "Wrong fulled path SourceAssemblies") config.SourceAssemblies
+    emptyDirectory (ApplicationParameterError "Wrong fulled path TempDirectory") config.TempDirectory
+    emptyDirectory (ApplicationParameterError "Wrong fulled path DestinationDirectory") config.DestinationDirectory
+    emptyDirectory (ApplicationParameterError "Wrong fulled path SecondLevelDestinationDirectory") config.SecondLevelDestinationDirectory
+    printfn "TempDirectory \"%s\"" config.TempDirectory
+    printfn "DestinationDirectory \"%s\"" config.DestinationDirectory
+    printfn "SecondLevelDestinationDirectory \"%s\"" config.SecondLevelDestinationDirectory
+    printfn "BridgeNameAttribute \"%s\"" config.BridgeNameAttribute
+    Array.iter (fun name -> printfn "SourceAssembly \"%s\"" name) config.SourceAssemblies
+    config
 
-//let flip f a b = f b a
-
-let typeAsCPPCLIBridgeAttributed attributeBridgeName (type_ : System.Type) =
+let typeAsCPPCLIBridgeAttributed (attributeBridgeName : string) (type_ : System.Type) =
     type_.GetCustomAttributes(typeof<Bridge.CPPCLIBridgeAttribute>, false) |>
     Seq.tryFind (fun attribute -> 
                             match attribute with
@@ -61,11 +91,15 @@ let findClassesMarkedForGeneration attributeBridgeName sourceAssemblies =
 let main argv = 
     let applicationResult = 
         try
-            printfn "Started application with arguments: %A" argv
-            let opConfig = OperationConfig.Load @"C:\Sergey\Projects\CPPCLIBridge\CPPCLIBridge\OperationConfigExample.json"        
-            prepareOperation opConfig
+            let (operationConfigPath) = argumentsHandler argv
+            let opConfig = OperationConfig.Load operationConfigPath
+            let assemblyDirectory = Assembly.GetCallingAssembly().Location |> Path.GetDirectoryName
+            let genConfig = Path.Combine (assemblyDirectory, @"CodeGenerationConfigExample.json") |> OperationConfig.Load
+            let opConfig = prepareOperation opConfig
             let markedForGeneration = Array.ofSeq <| findClassesMarkedForGeneration opConfig.BridgeNameAttribute opConfig.SourceAssemblies
-            markedForGeneration |> Array.iter (fun (a,m,t) ->  printfn "Will exported: %s %s.%s" (a.GetName() |> string) t.Namespace t.Name)
+            Console.WriteLine()
+            markedForGeneration |> Array.iter (fun (a,m,t) ->  printfn "Marked for export: %s %s.%s" (a.GetName() |> string) t.Namespace t.Name)
+            Console.WriteLine()
             ()//implement
             0
         with

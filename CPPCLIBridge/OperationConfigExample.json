@@ -1,9 +1,9 @@
 {
   "SourceAssemblies": [
-    "c:\\test\\Source\\Notification.dll"
+    "..\\..\\..\\..\\..\\..\\test\\Source\\Notification.dll"
   ],
-  "TempDirectory": "c:\\test\\Temp",
-  "DestinationDirectory": "c:\\test\\Destination",
-  "SecondLevelDestinationDirectory": "c:\\test\\SecondDestination",
+  "TempDirectory": "..\\..\\..\\..\\..\\..\\test\\Temp",
+  "DestinationDirectory": "..\\..\\..\\..\\..\\..\\test\\Destination",
+  "SecondLevelDestinationDirectory": "..\\..\\..\\..\\..\\..\\test\\SecondDestination",
   "BridgeNameAttribute": "Notification"
 }
