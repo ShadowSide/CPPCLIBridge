@@ -66,8 +66,18 @@ type DMemberyType =
         publicProperties: DProperty[];
         publicMethods: DMethod[];
         publicConstructors: DMethod[];
-        haveDestructor: bool
+        haveDestructor: bool;
         essentialAttributes: DMemberyTypeEssentialAttributes;
     }
 
-type DType = DMemberyType | DEnum
+type DModelType = Simple | List
+
+type DEmbededType = 
+    {
+        typeInfo: DTypeInfo;
+        isRef: bool;
+        modelType: DModelType;
+        wrapName: Option<string>;
+    }
+
+type DType = DDMemberyType of DMemberyType | DDEnum of DEnum | DDEmbededType of DEmbededType

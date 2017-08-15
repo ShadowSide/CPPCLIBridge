@@ -6,8 +6,8 @@ open ApplicationExceptions
 open ConfigDataProviders
 
 let inline checkParameterNotEmpty (ex : ^e)  = function
-    | null     ->  raise ex
-    | ""       ->  raise ex
+    | null     -> raise ex
+    | ""       -> raise ex
     | _        -> ()
 
 let inline checkExistsFile (ex : ^e) path = 
@@ -55,3 +55,11 @@ let prepareOperation (config : OperationConfig.Root) =
     printfn "BridgeNameAttribute \"%s\"" config.BridgeNameAttribute
     Array.iter (fun name -> printfn "SourceAssembly \"%s\"" name) config.SourceAssemblies
     config
+
+let typesCollectionLoad (config:CodeGenerationConfig.Root) = 
+    config.MappingTypes |> 
+    Array.map (fun m -> 
+        m.
+    ) |>
+    TypesEmbeded |>
+    TypesColection

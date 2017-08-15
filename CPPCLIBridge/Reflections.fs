@@ -18,3 +18,7 @@ let findClassesMarkedForGeneration attributeBridgeName sourceAssemblies =
                                                           Seq.filter (fun (_, attr) -> Option.isSome attr) |>
                                                                                        Seq.map (fun (t, attr) -> (a, m, t, attr)))) |>
      Seq.concat |> Seq.concat
+
+//let fillEmbededTypes
+(*let fillTypesCollection types = Array.iter 
+    let findType*)

@@ -1,0 +1,242 @@
+{
+	"MappingTypes": [{
+			"CSharpType": [{
+					"Namespace": "",
+					"Name": "short"
+				},
+				{
+					"Namespace": "System",
+					"Name": "Int16"
+				}
+			],
+			"CPPCLIType": {
+				"Namespace": "System",
+				"Name": "Int16",
+				"IsRef": false,
+				"Model": "Simple"
+			},
+			"CPPType": {
+				"Namespace": "",
+				"Name": "int16_t",
+				"IsRef": false,
+				"Model": "Simple"
+			}
+		},
+		{
+			"CSharpType": [{
+					"Namespace": "",
+					"Name": "int"
+				},
+				{
+					"Namespace": "System",
+					"Name": "Int32"
+				}
+			],
+			"CPPCLIType": {
+				"Namespace": "System",
+				"Name": "Int32",
+				"IsRef": false,
+				"Model": "Simple"
+			},
+			"CPPType": {
+				"Namespace": "",
+				"Name": "int32_t",
+				"IsRef": false,
+				"Model": "Simple"
+			}
+		},
+		{
+			"CSharpType": [{
+					"Namespace": "",
+					"Name": "long"
+				},
+				{
+					"Namespace": "System",
+					"Name": "Int64"
+				}
+			],
+			"CPPCLIType": {
+				"Namespace": "System",
+				"Name": "Int64",
+				"IsRef": false,
+				"Model": "Simple"
+			},
+			"CPPType": {
+				"Namespace": "",
+				"Name": "int64_t",
+				"IsRef": false,
+				"Model": "Simple"
+			}
+		},
+		{
+			"CSharpType": [{
+					"Namespace": "",
+					"Name": "ushort"
+				},
+				{
+					"Namespace": "System",
+					"Name": "UInt16"
+				}
+			],
+			"CPPCLIType": {
+				"Namespace": "System",
+				"Name": "UInt16",
+				"IsRef": false,
+				"Model": "Simple"
+			},
+			"CPPType": {
+				"Namespace": "",
+				"Name": "uint16_t",
+				"IsRef": false,
+				"Model": "Simple"
+			}
+		},
+		{
+			"CSharpType": [{
+					"Namespace": "",
+					"Name": "uint"
+				},
+				{
+					"Namespace": "System",
+					"Name": "UInt32"
+				}
+			],
+			"CPPCLIType": {
+				"Namespace": "System",
+				"Name": "UInt32",
+				"IsRef": false,
+				"Model": "Simple"
+			},
+			"CPPType": {
+				"Namespace": "",
+				"Name": "uint32_t",
+				"IsRef": false,
+				"Model": "Simple"
+			}
+		},
+		{
+			"CSharpType": [{
+					"Namespace": "",
+					"Name": "ulong"
+				},
+				{
+					"Namespace": "System",
+					"Name": "UInt64"
+				}
+			],
+			"CPPCLIType": {
+				"Namespace": "System",
+				"Name": "UInt64",
+				"IsRef": false,
+				"Model": "Simple"
+			},
+			"CPPType": {
+				"Namespace": "",
+				"Name": "uint64_t",
+				"IsRef": false,
+				"Model": "Simple"
+			}
+		},
+		{
+      "CSharpType": [
+        {
+          "Namespace": "",
+          "Name": "string"
+        },
+        {
+          "Namespace": "System",
+          "Name": "String"
+        }
+      ],
+			"CPPCLIType": {
+				"Namespace": "System",
+				"Name": "String",
+				"IsRef": true,
+				"Model": "Simple"
+			},
+			"CPPType": {
+				"Namespace": "std",
+				"Name": "string",
+				"WrapName": "::std::shared_ptr",
+				"IsRef": false,
+				"Model": "Simple"
+			}
+		},
+		{
+			"CSharpType": [{
+				"Namespace": "System.Collections.Generic",
+				"Name": "List"
+			}],
+			"CPPCLIType": {
+				"Namespace": "System.Collections.Generic",
+				"Name": "List",
+				"IsRef": true,
+				"Model": "List"
+			},
+			"CPPType": {
+				"Namespace": "std",
+				"Name": "list",
+				"WrapName": "::std::shared_ptr",
+				"IsRef": true,
+				"Model": "List"
+			}
+		},
+		{
+			"CSharpType": [{
+				"Namespace": "System",
+				"Name": "Array"
+			}],
+			"CPPCLIType": {
+				"Namespace": "System",
+				"Name": "Array",
+				"IsRef": true,
+				"Model": "List"
+			},
+			"CPPType": {
+				"Namespace": "std",
+				"Name": "vector",
+				"WrapName": "::std::shared_ptr",
+				"IsRef": true,
+				"Model": "List"
+			}
+		},
+		{
+			"CSharpType": [{
+				"Namespace": "System.Collections.Generic",
+				"Name": "Dictionary"
+			}],
+			"CPPCLIType": {
+				"Namespace": "System.Collections.Generic",
+				"Name": "Dictionary",
+				"IsRef": true,
+				"Model": "List"
+			},
+			"CPPType": {
+				"Namespace": "std",
+				"Name": "map",
+				"WrapName": "::std::shared_ptr",
+				"IsRef": true,
+				"Model": "List"
+			}
+		},
+		{
+			"CSharpType": [{
+				"Namespace": "System.Collections.Generic",
+				"Name": "HashSet"
+			}],
+			"CPPCLIType": {
+				"Namespace": "System.Collections.Generic",
+				"Name": "HashSet",
+				"IsRef": true,
+				"Model": "List"
+			},
+			"CPPType": {
+				"Namespace": "std",
+				"Name": "set",
+				"WrapName": "::std::shared_ptr",
+				"IsRef": true,
+				"Model": "List"
+			}
+		}
+	]
+}
