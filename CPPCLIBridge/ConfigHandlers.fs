@@ -56,10 +56,22 @@ let prepareOperation (config : OperationConfig.Root) =
     Array.iter (fun name -> printfn "SourceAssembly \"%s\"" name) config.SourceAssemblies
     config
 
+
+    //Seq.concat
+    //List.collect
 let typesCollectionLoad (config:CodeGenerationConfig.Root) = 
+    let inline mappingConfigToKeyValue (mappingDestinationMember:(^b -> ^c)) (mapping:^a) = 
+        let {Name=Name; Namespace=Namespace; IsRef=IsRef; Model=modelFactory Model; WrapName=WrapName} = mappingDestinationMember mapping
+        Array.map (fun sourceType ->
+                            let {name=name; Namespace=Namespace} as source = sourceType
+                            let result = 
+                                ({
+                                    DTypeInfo.typeName=source.name; 
+                                    Namespace=source.Namespace
+                                 }, {isRef=IsRef; typeInfo = {Namespace=Namespace, typeName=Name}; model=Model; wrapName=WrapName})
+                            result)
     config.MappingTypes |> 
-    Array.map (fun m -> 
-        m.
-    ) |>
+    Array.map (mappingConfigToKeyValue (fun mapping -> mapping.CppType)) |>
+    //cartesian m.CSharpType m.CppcliType |> 
     TypesEmbeded |>
     TypesColection

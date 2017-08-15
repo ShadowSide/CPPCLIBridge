@@ -42,3 +42,8 @@ type TypesColection (typesEmbeded: TypesEmbeded) =
             this.typesEmbeded.findType dTypeInfo |> Option.get |> DDEmbededType
         | dTypeInfo -> 
             this.typesExported.getType typeConstructor dTypeInfo
+
+let modelFactory = function
+| "Simple" -> Simple
+| "List" -> List
+| model -> failwith <| sprintf "Unknown model %s" model
